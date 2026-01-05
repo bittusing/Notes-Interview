@@ -732,11 +732,134 @@ console.log(twoSum([1, 2, 3, 4, 5], 7)); // Output: [1, 4] (indices 1 and 4)
 console.log(twoSum([2, 7, 11, 15], 9)); // Output: [0, 1] (indices 0 and 1)
 
 // Example 2: Three Sum (Extension of two pointer)
+
+/**
+ * THREE SUM KYA HAI?
+ * 
+ * Three Sum problem mein humein array mein teen numbers find karne hain
+ * jinka sum target ke equal ho.
+ * 
+ * Simple Definition:
+ * - Array mein 3 numbers find karna jinka sum = target
+ * - Two Sum ka extension hai
+ * - Fixed first number, baaki do numbers two pointer se find
+ * 
+ * Real-life Analogy:
+ * 1. Shopping:
+ *    - 3 items select karna jinka total price = budget
+ *    - Pehla item fix, baaki 2 items select
+ * 
+ * 2. Team Selection:
+ *    - 3 players select karna jinka total score = target
+ *    - Ek player fix, baaki 2 players select
+ * 
+ * Algorithm Approach:
+ * 1. Array ko sort karo (two pointer ke liye zaroori)
+ * 2. Pehla number fix karo (loop se)
+ * 3. Baaki 2 numbers two pointer se find karo
+ * 4. Duplicates handle karo
+ * 
+ * Time Complexity: O(n²)
+ *   - Outer loop: O(n)
+ *   - Two pointer: O(n)
+ *   - Total: O(n²)
+ * 
+ * Space Complexity: O(1) excluding result array
+ */
+
 function threeSum(arr, target) {
-  arr.sort((a, b) => a - b); // Sort karna zaroori hai
+  // Step 1: Array ko sort karo (two pointer ke liye zaroori)
+  arr.sort((a, b) => a - b); // Ascending order
+  const result = [];
+  
+  // Step 2: Pehla number fix karo (i se)
+  for (let i = 0; i < arr.length - 2; i++) {
+    // Step 3: Duplicates skip karo (pehla number)
+    if (i > 0 && arr[i] === arr[i - 1]) {
+      continue; // Same number skip
+    }
+    
+    // Step 4: Two pointers initialize (baaki 2 numbers ke liye)
+    let left = i + 1;        // Second number
+    let right = arr.length - 1; // Third number
+    
+    // Step 5: Two pointer technique
+    while (left < right) {
+      const sum = arr[i] + arr[left] + arr[right];
+      
+      if (sum === target) {
+        // Step 6: Triplet found! Result mein add karo
+        result.push([arr[i], arr[left], arr[right]]);
+        
+        // Step 7: Duplicates skip karo
+        while (left < right && arr[left] === arr[left + 1]) {
+          left++; // Skip duplicate left
+        }
+        while (left < right && arr[right] === arr[right - 1]) {
+          right--; // Skip duplicate right
+        }
+        
+        // Step 8: Pointers move karo
+        left++;
+        right--;
+      } else if (sum < target) {
+        // Step 9: Sum chhota hai, left pointer aage (bada number chahiye)
+        left++;
+      } else {
+        // Step 10: Sum bada hai, right pointer piche (chhota number chahiye)
+        right--;
+      }
+    }
+  }
+  
+  return result;
+}
+
+// Example with step-by-step:
+// Array: [-1, 0, 1, 2, -1, -4], Target: 0
+// Sorted: [-4, -1, -1, 0, 1, 2]
+// 
+// i=0, arr[i]=-4:
+//   left=1, right=5: sum = -4 + (-1) + 2 = -3 < 0, left++
+//   left=2, right=5: sum = -4 + (-1) + 2 = -3 < 0, left++
+//   left=3, right=5: sum = -4 + 0 + 2 = -2 < 0, left++
+//   left=4, right=5: sum = -4 + 1 + 2 = -1 < 0, left++
+//   left >= right, next i
+// 
+// i=1, arr[i]=-1:
+//   left=2, right=5: sum = -1 + (-1) + 2 = 0 == 0 ✓
+//     Result: [[-1, -1, 2]]
+//     left=3, right=4
+//   left=3, right=4: sum = -1 + 0 + 1 = 0 == 0 ✓
+//     Result: [[-1, -1, 2], [-1, 0, 1]]
+//     left=4, right=3, loop ends
+// 
+// i=2, arr[i]=-1 (duplicate of i=1):
+//   Skip (already processed)
+// 
+// i=3, arr[i]=0:
+//   left=4, right=5: sum = 0 + 1 + 2 = 3 > 0, right--
+//   left >= right, next i
+// 
+// Result: [[-1, -1, 2], [-1, 0, 1]]
+
+console.log(threeSum([-1, 0, 1, 2, -1, -4], 0));
+// Output: [[-1, -1, 2], [-1, 0, 1]]
+
+console.log(threeSum([0, 1, 1], 0));
+// Output: [] (no triplet found)
+
+console.log(threeSum([0, 0, 0], 0));
+// Output: [[0, 0, 0]]
+
+// Example 3: Three Sum with Different Target
+function threeSumTarget(arr, target) {
+  arr.sort((a, b) => a - b);
   const result = [];
   
   for (let i = 0; i < arr.length - 2; i++) {
+    if (i > 0 && arr[i] === arr[i - 1]) continue;
+    
     let left = i + 1;
     let right = arr.length - 1;
     
@@ -745,6 +868,8 @@ function threeSum(arr, target) {
       
       if (sum === target) {
         result.push([arr[i], arr[left], arr[right]]);
+        while (left < right && arr[left] === arr[left + 1]) left++;
+        while (left < right && arr[right] === arr[right - 1]) right--;
         left++;
         right--;
       } else if (sum < target) {
@@ -757,6 +882,70 @@ function threeSum(arr, target) {
   
   return result;
 }
+
+console.log(threeSumTarget([1, 2, 3, 4, 5, 6], 10));
+// Output: [[1, 3, 6], [1, 4, 5], [2, 3, 5]]
+
+// Example 4: Three Sum Closest (Find closest sum to target)
+function threeSumClosest(arr, target) {
+  arr.sort((a, b) => a - b);
+  let closestSum = Infinity;
+  let minDiff = Infinity;
+  
+  for (let i = 0; i < arr.length - 2; i++) {
+    let left = i + 1;
+    let right = arr.length - 1;
+    
+    while (left < right) {
+      const sum = arr[i] + arr[left] + arr[right];
+      const diff = Math.abs(sum - target);
+      
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestSum = sum;
+      }
+      
+      if (sum < target) {
+        left++;
+      } else if (sum > target) {
+        right--;
+      } else {
+        return target; // Exact match
+      }
+    }
+  }
+  
+  return closestSum;
+}
+
+console.log(threeSumClosest([-1, 2, 1, -4], 1)); // Output: 2
+// Closest sum to 1: -1 + 2 + 1 = 2
+
+// Example 5: Three Sum - Return Indices Instead of Values
+function threeSumIndices(arr, target) {
+  const result = [];
+  const map = new Map();
+  
+  // Store indices
+  for (let i = 0; i < arr.length; i++) {
+    map.set(arr[i], i);
+  }
+  
+  for (let i = 0; i < arr.length - 2; i++) {
+    for (let j = i + 1; j < arr.length - 1; j++) {
+      const needed = target - arr[i] - arr[j];
+      if (map.has(needed) && map.get(needed) > j) {
+        result.push([i, j, map.get(needed)]);
+      }
+    }
+  }
+  
+  return result;
+}
+
+console.log(threeSumIndices([1, 2, 3, 4, 5], 9));
+// Output: [[0, 1, 4], [0, 2, 3], [1, 2, 2]] (indices)
+// Values: [1,2,5], [1,3,4], [2,3,4] (but [2,3,4] has duplicate index 2)
 
 // Example 3: Palindrome Check (Opposite Ends)
 function isPalindrome(str) {
@@ -784,7 +973,7 @@ function removeDuplicates(arr) {
   let slow = 0; // Slow pointer (unique elements ke liye)
   
   // Fast pointer har element ko check karta hai
-  for (let fast = 1; fast < arr.length; fast++) {
+  for (let fast = 1;   < arr.length; fast++) {
     if (arr[fast] !== arr[slow]) {
       slow++; // Slow pointer aage badhao
       arr[slow] = arr[fast]; // Unique element store karo

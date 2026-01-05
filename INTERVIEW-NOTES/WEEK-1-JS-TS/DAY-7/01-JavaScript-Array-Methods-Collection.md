@@ -152,7 +152,7 @@ function getUserById(users, id) {
 
 **Syntax:** `array.findIndex(callback(currentValue, index, array), thisArg)`
 
-**Description:** Condition match karne wale element ka index return karta hai.
+**Description:** Condition match karne wale element ka index return karta hai.(pahla)
 
 ```javascript
 const numbers = [10, 20, 30, 40];
