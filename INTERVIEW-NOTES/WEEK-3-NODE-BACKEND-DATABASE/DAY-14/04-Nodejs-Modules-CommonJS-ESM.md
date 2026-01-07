@@ -22,7 +22,7 @@
 
 **ES Modules (ESM):**
 - JavaScript ka standard module system
-- import/export syntax
+- import/export syntax , // import axios  from 'axios';
 - Static analysis
 - Tree shaking support
 - Modern approach
