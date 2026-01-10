@@ -69,6 +69,48 @@ React Best Practices are proven approaches for building React applications. Area
 // COMPONENT DESIGN
 // ============================================
 
+/**
+ * COMPONENT DESIGN BEST PRACTICES KYA HAI? (HINGLISH)
+ *
+ * Component Design Best Practices proven approaches hain React components banane
+ * ke liye. Small, focused components banane se code maintainable, testable, aur
+ * reusable hota hai.
+ *
+ * Simple Definition:
+ * - Small, focused components
+ * - Single responsibility principle
+ * - Reusable components
+ * - Clear component structure
+ *
+ * Real-life Analogy:
+ * 1. Modular Building:
+ *    - Jaise modular buildings mein small units hote hain
+ *    - Small components bhi waise hi - modular, reusable
+ *    - Easy to build, maintain, aur replace
+ *
+ * 2. Single Purpose Tool:
+ *    - Jaise ek tool ka ek specific purpose hota hai
+ *    - Component bhi waise hi - single responsibility
+ *    - Clear purpose, easy to understand
+ *
+ * Component Design Principles:
+ * - **Small:** Keep components small (50-100 lines ideally)
+ * - **Focused:** Single responsibility
+ * - **Reusable:** Use in multiple places
+ * - **Composable:** Combine to build larger components
+ *
+ * COMPONENT DESIGN BEST PRACTICES - EASY ENGLISH EXPLANATION
+ *
+ * Component Design Best Practices are proven approaches for building React components.
+ * Small, focused components make code maintainable, testable, and reusable.
+ *
+ * Key Principles:
+ * - **Small:** Keep components small (50-100 lines)
+ * - **Focused:** Single responsibility
+ * - **Reusable:** Use in multiple places
+ * - **Composable:** Combine for larger components
+ */
+
 // ✅ GOOD - Small, focused component
 function Button({ onClick, children, variant = 'primary' }) {
   return (
@@ -90,6 +132,37 @@ function ComplexComponent() {
 // ============================================
 // STATE MANAGEMENT
 // ============================================
+
+/**
+ * STATE MANAGEMENT BEST PRACTICES KYA HAI? (HINGLISH)
+ *
+ * State Management Best Practices guide karte hain ki state kahan store karna
+ * chahiye - local state (useState), global state (Context/Redux), ya lifted state.
+ * Right place par state rakhna performance aur maintainability improve karta hai.
+ *
+ * Simple Definition:
+ * - State ko right place par store karna
+ * - Local vs Global state decide karna
+ * - State lifting decisions
+ * - Performance considerations
+ *
+ * Real-life Analogy:
+ * 1. Storage Location:
+ *    - Jaise items ko right place par store karte ho (kitchen items kitchen mein)
+ *    - State bhi waise hi - right place par store
+ *    - Easy access, better organization
+ *
+ * State Management Strategy:
+ * - **Local State (useState):** Component-specific data
+ * - **Global State (Context/Redux):** Shared across multiple components
+ * - **Lifted State:** Multiple components ko share karna ho
+ *
+ * STATE MANAGEMENT BEST PRACTICES - EASY ENGLISH EXPLANATION
+ *
+ * State Management Best Practices guide where to store state - local (useState),
+ * global (Context/Redux), or lifted. Right state placement improves performance
+ * and maintainability.
+ */
 
 // ✅ GOOD - State in right place
 function TodoList() {
@@ -172,6 +245,36 @@ function App() {
 // CODE ORGANIZATION
 // ============================================
 
+/**
+ * CODE ORGANIZATION BEST PRACTICES KYA HAI? (HINGLISH)
+ *
+ * Code Organization Best Practices guide karte hain ki React application ko
+ * kaise structure karna chahiye. Good folder structure code find karna, maintain
+ * karna, aur team collaboration ko easy banata hai.
+ *
+ * Simple Definition:
+ * - Folder structure decide karna
+ * - Files ko logically organize karna
+ * - Easy navigation
+ * - Team collaboration
+ *
+ * Real-life Analogy:
+ * 1. Library Organization:
+ *    - Jaise library mein books sections mein organize hote hain
+ *    - Code organization bhi waise hi - files logically organized
+ *    - Easy to find, maintain
+ *
+ * Organization Patterns:
+ * - **Feature-based:** Group by feature (users/, products/)
+ * - **Component-based:** Group by type (components/, hooks/)
+ * - **Best:** Feature-based for large apps
+ *
+ * CODE ORGANIZATION BEST PRACTICES - EASY ENGLISH EXPLANATION
+ *
+ * Code Organization Best Practices guide how to structure React applications.
+ * Good folder structure makes code easy to find, maintain, and collaborate on.
+ */
+
 /*
 src/
   components/
@@ -194,6 +297,37 @@ src/
 // NAMING CONVENTIONS
 // ============================================
 
+/**
+ * NAMING CONVENTIONS KYA HAI? (HINGLISH)
+ *
+ * Naming Conventions code readability improve karne ke liye naming standards hain.
+ * Clear, descriptive names code ko self-documenting banate hain aur maintainability
+ * badhate hain.
+ *
+ * Simple Definition:
+ * - Clear, descriptive names use karna
+ * - Consistent naming patterns
+ * - Self-documenting code
+ * - Better readability
+ *
+ * Real-life Analogy:
+ * 1. Street Names:
+ *    - Jaise streets ke clear names hote hain (Main Street, Park Avenue)
+ *    - Clear naming bhi waise hi - descriptive names
+ *    - Easy to find, understand
+ *
+ * Naming Best Practices:
+ * - **Components:** PascalCase (UserProfile, TodoItem)
+ * - **Functions/Hooks:** camelCase (useFetch, handleClick)
+ * - **Constants:** UPPER_SNAKE_CASE (MAX_RETRY_COUNT)
+ * - **Files:** Match component name (UserProfile.jsx)
+ *
+ * NAMING CONVENTIONS - EASY ENGLISH EXPLANATION
+ *
+ * Naming Conventions are standards for naming to improve code readability.
+ * Clear, descriptive names make code self-documenting and improve maintainability.
+ */
+
 // ✅ GOOD - Clear, descriptive names
 function UserProfileCard() {}
 function useFetchUserData() {}
@@ -207,6 +341,39 @@ const x = 3;
 // ============================================
 // ACCESSIBILITY
 // ============================================
+
+/**
+ * ACCESSIBILITY (A11Y) KYA HAI? (HINGLISH)
+ *
+ * Accessibility (a11y) React applications ko accessible banane ka practice hai
+ * taaki sabhi users (including disabilities wale) app use kar saken. Semantic HTML,
+ * ARIA attributes, keyboard navigation important hain.
+ *
+ * Simple Definition:
+ * - Apps ko sabke liye accessible banana
+ * - Screen readers support
+ * - Keyboard navigation
+ * - Semantic HTML use karna
+ *
+ * Real-life Analogy:
+ * 1. Universal Design:
+ *    - Jaise buildings mein ramps, elevators sabke liye hote hain
+ *    - Accessibility bhi waise hi - sabke liye access
+ *    - Inclusive design
+ *
+ * Accessibility Best Practices:
+ * - **Semantic HTML:** Proper HTML elements (button, nav, main)
+ * - **ARIA Attributes:** aria-label, aria-describedby
+ * - **Keyboard Navigation:** Tab order, focus management
+ * - **Alt Text:** Images mein alt attributes
+ * - **Color Contrast:** Sufficient contrast ratios
+ *
+ * ACCESSIBILITY (A11Y) - EASY ENGLISH EXPLANATION
+ *
+ * Accessibility (a11y) is the practice of making React applications accessible
+ * to all users, including those with disabilities. Semantic HTML, ARIA attributes,
+ * and keyboard navigation are important.
+ */
 
 // ✅ GOOD - Accessible
 <button

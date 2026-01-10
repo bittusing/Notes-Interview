@@ -67,6 +67,66 @@ Performance Optimization improves React app speed and efficiency. Techniques: Re
 // React.memo
 // ============================================
 
+/**
+ * React.memo KYA HAI? (HINGLISH)
+ *
+ * React.memo ek higher-order component hai jo component ko memoize karta hai.
+ * Agar component ke props change nahi hue hain, to component re-render nahi hota.
+ * Yeh unnecessary re-renders prevent karke performance improve karta hai.
+ *
+ * Simple Definition:
+ * - Component memoization
+ * - Props same ho to re-render nahi
+ * - Performance optimization
+ * - Shallow comparison of props
+ *
+ * Real-life Analogy:
+ * 1. Smart Cache:
+ *    - Jaise browser same content ko cache karke dobara load nahi karta
+ *    - React.memo bhi waise hi - same props par cached component use karta hai
+ *    - Re-render avoid karta hai
+ *
+ * 2. Exam Paper Check:
+ *    - Jaise teacher same answers ko dobara check nahi karta
+ *    - React.memo bhi waise hi - same props ko dobara process nahi karta
+ *    - Performance save karta hai
+ *
+ * How React.memo Works:
+ * - Component ko wrap karta hai
+ * - Props ko shallow compare karta hai
+ * - Agar props same hain: Cached component return (no re-render)
+ * - Agar props different hain: Re-render karta hai
+ *
+ * When to Use:
+ * - Component frequently re-renders with same props
+ * - Expensive to render component
+ * - Parent re-renders often
+ * - Props are primitive or stable references
+ *
+ * When NOT to Use:
+ * - Props change frequently
+ * - Component is simple (overhead > benefit)
+ * - Memoization overhead zyada hai
+ *
+ * React.memo - EASY ENGLISH EXPLANATION
+ *
+ * React.memo is a higher-order component that memoizes a component. If props
+ * haven't changed, component doesn't re-render. Prevents unnecessary re-renders
+ * to improve performance.
+ *
+ * Key Concepts:
+ * - **Memoization:** Cache component render
+ * - **Props Comparison:** Shallow comparison of props
+ * - **Performance:** Prevent unnecessary re-renders
+ * - **Higher-Order Component:** Wraps component
+ *
+ * How It Works:
+ * - Wraps component
+ * - Shallow compares props
+ * - If props same: Returns cached component
+ * - If props different: Re-renders component
+ */
+
 import React, { memo } from 'react';
 
 // Memo prevents re-render if props unchanged
@@ -136,6 +196,52 @@ function ParentComponent() {
 // CODE SPLITTING
 // ============================================
 
+/**
+ * CODE SPLITTING KYA HAI? (HINGLISH)
+ *
+ * Code Splitting React mein bundle size ko chhota karne ka tarika hai by
+ * splitting code into smaller chunks. Components ko lazy load karke initial
+ * bundle size reduce hota hai aur app faster load hota hai.
+ *
+ * Simple Definition:
+ * - Bundle size ko chhota karna
+ * - Code ko chunks mein split karna
+ * - Lazy loading (load on demand)
+ * - Faster initial load
+ *
+ * Real-life Analogy:
+ * 1. Book Chapters:
+ *    - Jaise book chapters alag alag hote hain, sab ek saath load nahi karte
+ *    - Code Splitting bhi waise hi - code ko chunks mein split
+ *    - Jab zarurat ho tab load karte hain
+ *    - Initial load fast hota hai
+ *
+ * 2. Modular Furniture:
+ *    - Jaise modular furniture pieces alag alag hote hain
+ *    - Code Splitting bhi waise hi - code modules alag alag
+ *    - Jab zarurat ho tab use karte hain
+ *
+ * Code Splitting Benefits:
+ * - **Smaller Initial Bundle:** Fast initial load
+ * - **Lazy Loading:** Load only what's needed
+ * - **Better Performance:** Faster app startup
+ * - **Route-based:** Split by routes
+ * - **Component-based:** Split by components
+ *
+ * CODE SPLITTING - EASY ENGLISH EXPLANATION
+ *
+ * Code Splitting in React is a technique to reduce bundle size by splitting code
+ * into smaller chunks. Lazy loading components reduces initial bundle size and
+ * makes app load faster.
+ *
+ * Key Concepts:
+ * - **Smaller Bundles:** Split code into chunks
+ * - **Lazy Loading:** Load components on demand
+ * - **Faster Load:** Reduce initial bundle size
+ * - **Route-based:** Split by routes
+ * - **Performance:** Better app performance
+ */
+
 import { lazy, Suspense } from 'react';
 
 // Lazy load component
@@ -193,6 +299,50 @@ function VirtualizedList({ items }) {
 // DEBOUNCING
 // ============================================
 
+/**
+ * DEBOUNCING KYA HAI? (HINGLISH)
+ *
+ * Debouncing ek technique hai jo function calls ko delay karta hai. Agar
+ * function quickly multiple times call ho raha hai, to debouncing last call
+ * ke baad hi function execute karta hai. Search inputs, API calls mein commonly
+ * use hota hai.
+ *
+ * Simple Definition:
+ * - Function calls ko delay karna
+ * - Last call ke baad execute karna
+ * - Multiple rapid calls ko single call mein convert
+ * - Performance optimization
+ *
+ * Real-life Analogy:
+ * 1. Elevator:
+ *    - Jaise elevator mein sabse last button press ke baad hi move hota hai
+ *    - Debouncing bhi waise hi - last call ke baad execute
+ *    - Multiple button presses ko single action mein convert
+ *
+ * 2. Search Bar:
+ *    - Jaise search bar mein type karte waqt har keystroke par search nahi karte
+ *    - Debouncing bhi waise hi - typing complete hone ke baad search
+ *    - API calls reduce karta hai
+ *
+ * Debouncing Use Cases:
+ * - Search inputs (reduce API calls)
+ * - Window resize events
+ * - Scroll events
+ * - Auto-save functionality
+ *
+ * DEBOUNCING - EASY ENGLISH EXPLANATION
+ *
+ * Debouncing is a technique that delays function execution. If a function is
+ * called multiple times quickly, debouncing executes it only after the last call.
+ * Commonly used in search inputs and API calls.
+ *
+ * Key Concepts:
+ * - **Delay Execution:** Wait before executing
+ * - **Last Call:** Execute after last call
+ * - **Reduce Calls:** Convert multiple calls to single
+ * - **Performance:** Optimize frequent operations
+ */
+
 import { useState, useEffect } from 'react';
 
 function useDebounce(value, delay) {
@@ -233,6 +383,49 @@ function SearchInput() {
 // ============================================
 // THROTTLING
 // ============================================
+
+/**
+ * THROTTLING KYA HAI? (HINGLISH)
+ *
+ * Throttling ek technique hai jo function calls ko limit karta hai. Debouncing
+ * se different - throttling function ko fixed time intervals mein execute karta hai,
+ * chahe kitni bhi times call ho. Scroll events, resize events mein commonly use hota hai.
+ *
+ * Simple Definition:
+ * - Function calls ko rate limit karna
+ * - Fixed intervals mein execute karna
+ * - Maximum execution frequency control
+ * - Debouncing se different (throttling regular intervals mein)
+ *
+ * Real-life Analogy:
+ * 1. Rate Limiter:
+ *    - Jaise credit card mein spending limit hota hai (fixed amount per month)
+ *    - Throttling bhi waise hi - fixed intervals mein function execute
+ *    - Maximum calls control karta hai
+ *
+ * 2. Traffic Signal:
+ *    - Jaise traffic signal fixed time intervals mein change hota hai
+ *    - Throttling bhi waise hi - fixed intervals mein function execute
+ *    - Regular execution ensure karta hai
+ *
+ * Throttling vs Debouncing:
+ * - **Throttling:** Fixed intervals mein execute (regular execution)
+ * - **Debouncing:** Last call ke baad execute (delayed execution)
+ * - **Throttling:** Scroll events (regular updates needed)
+ * - **Debouncing:** Search input (wait for user to stop typing)
+ *
+ * THROTTLING - EASY ENGLISH EXPLANATION
+ *
+ * Throttling is a technique that limits function call rate. Different from debouncing -
+ * throttling executes function at fixed time intervals, regardless of how many times
+ * it's called. Commonly used in scroll events, resize events.
+ *
+ * Key Concepts:
+ * - **Rate Limiting:** Limit function call frequency
+ * - **Fixed Intervals:** Execute at regular intervals
+ * - **Maximum Frequency:** Control maximum execution rate
+ * - **Different from Debouncing:** Regular execution vs delayed
+ */
 
 function useThrottle(value, limit) {
   const [throttledValue, setThrottledValue] = useState(value);

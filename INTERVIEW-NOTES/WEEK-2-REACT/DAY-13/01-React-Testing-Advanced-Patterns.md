@@ -67,6 +67,48 @@ React Testing: Verify components and functionality work correctly. Tools: Jest (
 // JEST TESTING
 // ============================================
 
+/**
+ * REACT TESTING KYA HAI? (HINGLISH)
+ *
+ * React Testing components aur functionality ko verify karne ka tarika hai.
+ * Jest test runner hai aur React Testing Library components ko test karne ke liye
+ * use hoti hai. Testing se confidence milta hai ki code sahi kaam kar raha hai.
+ *
+ * Simple Definition:
+ * - Components aur functionality verify karna
+ * - Jest: Test runner
+ * - React Testing Library: Component testing
+ * - Confidence: Code changes mein confidence
+ *
+ * Real-life Analogy:
+ * 1. Quality Check:
+ *    - Jaise factory mein products ko quality check karte ho
+ *    - Testing bhi waise hi - code ko quality check karta hai
+ *    - Bugs early stage mein catch karta hai
+ *
+ * 2. Exam:
+ *    - Jaise students ko exam mein test karte ho
+ *    - Testing bhi waise hi - code ko test karta hai
+ *    - Code sahi kaam kar raha hai ya nahi verify karta hai
+ *
+ * Testing Types:
+ * - **Unit Tests:** Individual components test
+ * - **Integration Tests:** Component interactions test
+ * - **E2E Tests:** Full user flows test
+ *
+ * REACT TESTING - EASY ENGLISH EXPLANATION
+ *
+ * React Testing is verifying components and functionality work correctly. Jest is
+ * the test runner and React Testing Library is used for component testing.
+ * Testing provides confidence in code changes.
+ *
+ * Key Concepts:
+ * - **Verify:** Check components work correctly
+ * - **Jest:** Test runner framework
+ * - **React Testing Library:** Component testing utilities
+ * - **Confidence:** Safe code changes
+ */
+
 import { render, screen, fireEvent } from '@testing-library/react';
 import Counter from './Counter';
 
@@ -100,6 +142,47 @@ test('displays user name', () => {
 // HIGHER-ORDER COMPONENTS (HOC)
 // ============================================
 
+/**
+ * HIGHER-ORDER COMPONENTS (HOC) KYA HAI? (HINGLISH)
+ *
+ * Higher-Order Components (HOC) functions hain jo component ko input mein lete hain
+ * aur enhanced component return karte hain. Code reuse, cross-cutting concerns
+ * (authentication, logging) handle karne ke liye use hote hain.
+ *
+ * Simple Definition:
+ * - Component ko enhance karne wala function
+ * - Component input, enhanced component output
+ * - Code reuse ke liye
+ * - Cross-cutting concerns handle karta hai
+ *
+ * Real-life Analogy:
+ * 1. Wrapper:
+ *    - Jaise gift ko wrapper mein wrap karte ho
+ *    - HOC bhi waise hi - component ko wrap karke enhance karta hai
+ *    - Same component, additional features
+ *
+ * 2. Enhancement Layer:
+ *    - Jaise phone ko case mein rakhte ho (protection layer)
+ *    - HOC bhi waise hi - component ko enhancement layer add karta hai
+ *
+ * HOC Pattern:
+ * - Function that takes component
+ * - Returns new enhanced component
+ * - Adds functionality (auth, logging, etc.)
+ *
+ * HIGHER-ORDER COMPONENTS - EASY ENGLISH EXPLANATION
+ *
+ * Higher-Order Components (HOC) are functions that take a component and return
+ * an enhanced component. Used for code reuse and cross-cutting concerns like
+ * authentication, logging.
+ *
+ * Key Concepts:
+ * - **Function:** Takes component, returns component
+ * - **Enhancement:** Adds functionality
+ * - **Code Reuse:** Reusable logic
+ * - **Cross-cutting:** Common concerns
+ */
+
 function withAuth(Component) {
   return function AuthenticatedComponent(props) {
     const isAuthenticated = useAuth();
@@ -118,6 +201,31 @@ const ProtectedDashboard = withAuth(Dashboard);
 // ============================================
 // RENDER PROPS
 // ============================================
+
+/**
+ * RENDER PROPS PATTERN KYA HAI? (HINGLISH)
+ *
+ * Render Props pattern ek technique hai jahan component function ko prop ke
+ * rup mein accept karta hai aur use render karne ke liye use karta hai.
+ * State aur logic sharing ke liye use hota hai.
+ *
+ * Simple Definition:
+ * - Function as prop pass karna
+ * - Component state ko share karna
+ * - Logic reuse ke liye
+ * - Flexible composition
+ *
+ * Real-life Analogy:
+ * 1. Template with Data:
+ *    - Jaise template mein data pass karke render karte ho
+ *    - Render Props bhi waise hi - function prop se render
+ *    - Component data provide karta hai, function render karta hai
+ *
+ * RENDER PROPS - EASY ENGLISH EXPLANATION
+ *
+ * Render Props pattern is a technique where component accepts a function as prop
+ * and uses it to render. Used for sharing state and logic.
+ */
 
 function MouseTracker({ render }) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -143,6 +251,32 @@ function MouseTracker({ render }) {
 // ============================================
 // COMPOUND COMPONENTS
 // ============================================
+
+/**
+ * COMPOUND COMPONENTS PATTERN KYA HAI? (HINGLISH)
+ *
+ * Compound Components pattern multiple related components ko ek saath group
+ * karke flexible API provide karta hai. Parent component state manage karta hai
+ * aur children ko props pass karta hai using React.cloneElement.
+ *
+ * Simple Definition:
+ * - Multiple related components ko group karna
+ * - Parent state manage karta hai
+ * - Children ko props pass karta hai
+ * - Flexible composition
+ *
+ * Real-life Analogy:
+ * 1. Tool Set:
+ *    - Jaise tool set mein related tools ek saath hote hain
+ *    - Compound Components bhi waise hi - related components together
+ *    - Parent (tool box) children (tools) ko manage karta hai
+ *
+ * COMPOUND COMPONENTS - EASY ENGLISH EXPLANATION
+ *
+ * Compound Components pattern groups multiple related components together to
+ * provide flexible API. Parent manages state and passes props to children
+ * using React.cloneElement.
+ */
 
 function Tabs({ children }) {
   const [activeTab, setActiveTab] = useState(0);
@@ -180,6 +314,36 @@ function Tab({ isActive, onClick, children }) {
 // ERROR BOUNDARIES
 // ============================================
 
+/**
+ * ERROR BOUNDARIES KYA HAI? (HINGLISH)
+ *
+ * Error Boundaries React class components hain jo JavaScript errors ko catch
+ * karke UI crash hone se bachate hain. Ye child component tree mein errors
+ * catch karte hain aur fallback UI show karte hain.
+ *
+ * Simple Definition:
+ * - JavaScript errors catch karta hai
+ * - UI crash prevent karta hai
+ * - Fallback UI show karta hai
+ * - Class component (hooks mein nahi available)
+ *
+ * Real-life Analogy:
+ * 1. Safety Net:
+ *    - Jaise circus mein safety net hota hai fall ko catch karne ke liye
+ *    - Error Boundary bhi waise hi - errors ko catch karta hai
+ *    - App crash hone se bachata hai
+ *
+ * 2. Circuit Breaker:
+ *    - Jaise circuit breaker current overload ko handle karta hai
+ *    - Error Boundary bhi waise hi - errors ko handle karta hai
+ *    - System crash prevent karta hai
+ *
+ * ERROR BOUNDARIES - EASY ENGLISH EXPLANATION
+ *
+ * Error Boundaries are React class components that catch JavaScript errors and
+ * prevent UI crashes. They catch errors in child component tree and show fallback UI.
+ */
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -211,6 +375,33 @@ class ErrorBoundary extends React.Component {
 // ============================================
 // PORTAL
 // ============================================
+
+/**
+ * PORTAL KYA HAI? (HINGLISH)
+ *
+ * Portal React ka feature hai jo component ko DOM tree ke different location
+ * mein render karne deta hai. Modal, tooltip, dropdown jaise UI elements ke
+ * liye use hota hai jo parent component ke overflow/stacking context se bahar
+ * render hone chahiye.
+ *
+ * Simple Definition:
+ * - Component ko DOM ke different location mein render karna
+ * - Parent hierarchy se bahar render
+ * - Modal, tooltip ke liye use hota hai
+ * - z-index issues solve karta hai
+ *
+ * Real-life Analogy:
+ * 1. Teleportation:
+ *    - Jaise teleportation mein aap ek jagah se doosri jagah ja sakte ho
+ *    - Portal bhi waise hi - component ko different DOM location mein render
+ *    - Parent tree se bahar, lekin React tree mein same
+ *
+ * PORTAL - EASY ENGLISH EXPLANATION
+ *
+ * Portal is React feature that allows rendering component at different DOM location.
+ * Used for modals, tooltips, dropdowns that should render outside parent's
+ * overflow/stacking context.
+ */
 
 import { createPortal } from 'react-dom';
 
