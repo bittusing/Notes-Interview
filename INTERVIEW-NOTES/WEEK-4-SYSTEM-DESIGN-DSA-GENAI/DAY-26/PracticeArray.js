@@ -1,7 +1,4 @@
 ///console.log(twoSum([2, 7, 11, 15], 9));
-
-
-
 function twoSum(arr , target){
       let left =0 ; 
      let right = arr.length - 1;
@@ -22,11 +19,7 @@ function twoSum(arr , target){
     console.log(twoSum([1, 2, 3, 4, 5], 7));
     console.log(twoSum([2, 7, 11, 15], 9));
 
-
-
-
     ////////  how to split the array into two parts and do reverse of second part and merge the two parts
-
     function reverseSecondPart(arr) {
         let mid = Math.floor(arr.length / 2);
         let secondPart = arr.slice(mid);
