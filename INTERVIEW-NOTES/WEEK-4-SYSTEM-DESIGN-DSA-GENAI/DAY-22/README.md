@@ -37,6 +37,34 @@
 - Cache invalidation
 - Static asset optimization
 
+### 6. Message Queues
+- Point-to-Point vs Pub/Sub
+- RabbitMQ vs Kafka
+- Message acknowledgment
+- Dead letter queues
+- Event streaming
+
+### 7. Rate Limiting
+- Fixed Window vs Sliding Window
+- Token Bucket vs Leaky Bucket
+- Distributed rate limiting
+- Rate limit headers
+- Multi-level rate limiting
+
+### 8. API Versioning
+- URL Path vs Header versioning
+- Breaking changes handling
+- Deprecation strategies
+- Migration patterns
+- Best practices
+
+### 9. Database Indexing
+- Primary vs Secondary indexes
+- Clustered vs Non-clustered
+- Composite indexes
+- Index selectivity
+- Query optimization
+
 ## 🎯 Learning Objectives
 
 By the end of this day, you should understand:
@@ -45,6 +73,10 @@ By the end of this day, you should understand:
 - Load balancing strategies
 - Caching patterns and invalidation
 - CDN for content delivery
+- Message queue patterns and when to use
+- Rate limiting algorithms and implementation
+- API versioning strategies
+- Database indexing and optimization
 
 ---
 
